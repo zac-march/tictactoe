@@ -1,5 +1,6 @@
 const gameBoardDiv = document.querySelector(".gameboard");
-const winnerText = document.querySelector(".winner");
+const infoText = document.querySelector(".info");
+const resetBtn = document.querySelector(".reset");
 
 const displayController = (() => {
   const boardElements = (boardArray) => {
@@ -17,6 +18,7 @@ const displayController = (() => {
     }
     setCellListeners();
   };
+
   const setCellListeners = () => {
     const cells = document.querySelectorAll(".cell");
     cells.forEach(function (cell) {
@@ -27,7 +29,8 @@ const displayController = (() => {
       });
     });
   };
-  function getMarker(boardArray, rowIdx, cellIdx) {
+
+  const getMarker = (boardArray, rowIdx, cellIdx) => {
     if (boardArray[rowIdx][cellIdx] == -1) {
       return "O";
     } else if (boardArray[rowIdx][cellIdx] == 1) {
@@ -35,9 +38,22 @@ const displayController = (() => {
     } else {
       return "";
     }
-  }
+  };
 
-  return { boardElements };
+  const currentPlayerTurn = (player) => {
+    infoText.textContent = player + "'s turn";
+  };
+
+  const endGame = (gameOverValue) => {
+    if (gameOverValue == 0) {
+      infoText.textContent = "Tie!";
+    } else {
+      winnerName = gameOverValue == 3 ? "Player 1" : "Player 2";
+      infoText.textContent = winnerName + " wins!";
+    }
+  };
+
+  return { boardElements, currentPlayerTurn, endGame };
 })();
 
 const gameboard = (() => {
@@ -47,7 +63,8 @@ const gameboard = (() => {
     [0, 0, 0],
   ];
 
-  let currentTurn = "Player1";
+  let currentTurn;
+  let isGameOver;
 
   const fillCell = (row, cell, value) => {
     boardArray[row][cell] = value;
@@ -55,25 +72,29 @@ const gameboard = (() => {
     detectGameOver();
   };
 
-  const isValidTurn = (row, cell, player) => {
-    if (boardArray[row][cell] == 0 && player == currentTurn) {
+  const isValidTurn = (row, cell) => {
+    if (boardArray[row][cell] == 0 && !isGameOver) {
       return true;
     }
     return false;
   };
 
   const takeTurn = (rowIdx, cellIdx) => {
-    let playerValue = currentTurn == "Player1" ? 1 : -1;
+    if (!isValidTurn(rowIdx, cellIdx)) return;
+    let playerValue = currentTurn == "Player 1" ? 1 : -1;
     fillCell(rowIdx, cellIdx, playerValue);
-    toggleTurn();
+    if (!isGameOver) {
+      toggleTurn();
+    }
   };
 
   const toggleTurn = () => {
-    if (currentTurn == "Player1") {
-      currentTurn = "Player2";
+    if (currentTurn == "Player 1") {
+      currentTurn = "Player 2";
     } else {
-      currentTurn = "Player1";
+      currentTurn = "Player 1";
     }
+    displayController.currentPlayerTurn(currentTurn);
   };
 
   const resetBoard = () => {
@@ -82,13 +103,17 @@ const gameboard = (() => {
       [0, 0, 0],
       [0, 0, 0],
     ];
+    isGameOver = false;
+    currentTurn = "Player 1";
     displayController.boardElements(boardArray);
+    displayController.currentPlayerTurn(currentTurn);
   };
 
   const detectGameOver = () => {
     let gameOverValue = findGameOverValue();
-    if (gameOverValue != null) {
-      endGame(gameOverValue);
+    if (gameOverValue != undefined) {
+      isGameOver = true;
+      displayController.endGame(gameOverValue);
     }
   };
 
@@ -124,20 +149,11 @@ const gameboard = (() => {
     }
   };
 
-  const endGame = (gameOverValue) => {
-    if (gameOverValue == 0) {
-      console.log("Tie!");
-    } else {
-      winnerName = gameOverValue == 3 ? "Player 1" : "Player 2";
-      console.log("winnerName: ", winnerName);
-    }
-    resetBoard();
-  };
-
-  return { fillCell, resetBoard, takeTurn, isValidTurn };
+  return { resetBoard, takeTurn, isGameOver };
 })();
 
-const playerFactory = (name, score) => {
-  return { name, score };
-};
+resetBtn.addEventListener("click", function () {
+  gameboard.resetBoard();
+});
+
 gameboard.resetBoard();
