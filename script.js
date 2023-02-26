@@ -86,16 +86,24 @@ const gameboard = (() => {
   };
 
   const detectGameOver = () => {
+    let gameOverValue = findGameOverValue();
+    if (gameOverValue != null) {
+      endGame(gameOverValue);
+    }
+  };
+
+  const findGameOverValue = () => {
     //Detect vertical 3-in-a-row
     let sumDiagonalLeft = 0;
     let sumDiagonalRight = 0;
+    let filledCellsValue = 0;
     for (let rowIdx = 0; rowIdx < boardArray.length; rowIdx++) {
       sumDiagonalLeft += boardArray[rowIdx][rowIdx];
       sumDiagonalRight += boardArray[rowIdx][2 - rowIdx];
       if (sumDiagonalLeft == -3 || sumDiagonalLeft == 3) {
-        endGame(sumDiagonalLeft);
+        return sumDiagonalLeft;
       } else if (sumDiagonalRight == -3 || sumDiagonalRight == 3) {
-        endGame(sumDiagonalRight);
+        return sumDiagonalRight;
       }
       //Detect horizontal 3-in-a-row
       let sumHorizontal = 0;
@@ -103,18 +111,26 @@ const gameboard = (() => {
       for (let cellIdx = 0; cellIdx < boardArray[rowIdx].length; cellIdx++) {
         sumHorizontal += boardArray[rowIdx][cellIdx];
         sumVeritical += boardArray[cellIdx][rowIdx];
+        filledCellsValue += Math.abs(boardArray[rowIdx][cellIdx]);
         if (sumHorizontal == -3 || sumHorizontal == 3) {
-          endGame(sumHorizontal);
+          return sumHorizontal;
         } else if (sumVeritical == -3 || sumVeritical == 3) {
-          endGame(sumVeritical);
+          return sumVeritical;
+        }
+        if (filledCellsValue == 9) {
+          return 0;
         }
       }
     }
   };
 
-  const endGame = (winnerValue) => {
-    winnerName = winnerValue == 3 ? "Player 1" : "Player 2";
-    console.log("🚀 ~ file: script.js:88 ~ endGame ~ winnerName:", winnerName);
+  const endGame = (gameOverValue) => {
+    if (gameOverValue == 0) {
+      console.log("Tie!");
+    } else {
+      winnerName = gameOverValue == 3 ? "Player 1" : "Player 2";
+      console.log("winnerName: ", winnerName);
+    }
     resetBoard();
   };
 
