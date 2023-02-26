@@ -1,30 +1,94 @@
-body,
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
+
 html,
-body,
 body {
   width: 100%;
   height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: "Roboto";
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 100%;
+  min-height: 100%;
+  background-color: #eee;
+}
+
+header,
+footer,
+main {
+  padding: 30px 25% 30px 25%;
+}
+
+/* Header */
+
+header {
+  background-color: white;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  box-shadow: 0 1px 3px rgb(160, 160, 160);
+  align-items: center;
+}
+
+h1 {
+  margin: 0;
+}
+
+.actions {
+  justify-self: right;
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+
+/* Footer */
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fa-github {
+  font-size: 1.5rem;
+  transition: transform 0.6s ease-in-out;
+  color: black;
+}
+
+.fa-github:hover {
+  transform: rotate(-2deg) scale(1.2);
+}
+
+/* Main */
+
+main {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 3rem;
 }
 
 .gameboard {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
+  background-color: rgb(145, 145, 145);
+  gap: 1px;
 }
 
 .cell {
   width: 10rem;
   height: 10rem;
-  border: 1px solid black;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 48px;
   cursor: pointer;
+  background-color: #eee;
 }
 
 .cell-content {
@@ -33,7 +97,7 @@ body {
 }
 
 .cell:hover {
-  background-color: rgba(255, 228, 196, 0.2);
+  background-color: #fff6eb;
 }
 
 .info {
@@ -42,7 +106,6 @@ body {
 }
 
 .reset {
-  font-size: 3rem;
-  margin: 2rem;
+  font-size: 2rem;
   padding: 1rem;
 }
