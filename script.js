@@ -8,11 +8,17 @@ const displayController = (() => {
     for (let rowIdx = 0; rowIdx < boardArray.length; rowIdx++) {
       for (let cellIdx = 0; cellIdx < boardArray[rowIdx].length; cellIdx++) {
         let marker = getMarker(boardArray, rowIdx, cellIdx);
+
         const cell = document.createElement("div");
         cell.setAttribute("data-row", rowIdx);
         cell.setAttribute("data-cell", cellIdx);
-        cell.textContent = marker;
         cell.classList.add("cell");
+
+        const cellContent = document.createElement("p");
+        cellContent.classList.add("cell-content");
+        cellContent.textContent = marker;
+
+        cell.appendChild(cellContent);
         gameBoardDiv.appendChild(cell);
       }
     }
